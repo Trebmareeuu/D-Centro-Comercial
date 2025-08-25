@@ -9,8 +9,7 @@
     <meta name="description" content="Encuentra las mejores tiendas y servicios locales en un solo lugar.">
 
     <!-- Estilos CSS -->
-    <!-- Aquí enlazaremos nuestros archivos CSS más adelante -->
-    <!-- <link rel="stylesheet" href="<?php echo APP_URL; ?>/public/css/styles.css"> -->
+    <link rel="stylesheet" href="<?php echo APP_URL; ?>/public/css/style.css">
 
     <!-- FontAwesome para iconos (lo usaremos mucho) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">

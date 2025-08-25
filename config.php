@@ -7,39 +7,21 @@
  */
 
 // -- CONFIGURACIÓN DE LA BASE DE DATOS -- //
-
-/**
- * El host de la base de datos. Usualmente 'localhost' o '127.0.0.1'.
- */
 define('DB_HOST', '127.0.0.1');
-
-/**
- * El nombre de usuario para la conexión a la base de datos.
- */
 define('DB_USER', 'root');
-
-/**
- * La contraseña para la conexión a la base de datos.
- * Dejar en blanco si no hay contraseña.
- */
 define('DB_PASS', '');
-
-/**
- * El nombre de la base de datos que utilizará la aplicación.
- */
 define('DB_NAME', 'd_centro_comercial');
 
+// -- RUTAS DE LA APLICACIÓN -- //
 
-// -- OTRAS CONFIGURACIONES -- //
+// Ruta raíz del proyecto.
+define('ROOT', __DIR__);
 
-/**
- * La URL raíz del sitio.
- * Se usará para construir enlaces absolutos y evitar problemas de rutas.
- * Ejemplo: http://localhost/d-centro-comercial
- */
+// Ruta a la carpeta 'app'.
+define('APPROOT', __DIR__ . '/app');
+
+// URL Raíz del sitio. Usada para construir enlaces absolutos en el frontend.
 define('APP_URL', 'http://localhost');
 
-/**
- * El nombre del sitio.
- */
+// Nombre del sitio.
 define('SITE_NAME', 'D-Centro Comercial');

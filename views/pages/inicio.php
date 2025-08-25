@@ -2,21 +2,44 @@
 /**
  * Vista para la página de Inicio (Index).
  *
- * Muestra los elementos principales de la interfaz pública:
- * - Buscador
- * - Filtro de categorías
- * - Tiendas destacadas
- * - Grid de tiendas
+ * Muestra el grid de tiendas cargado desde la base de datos.
+ * La variable $data es pasada desde el controlador Pages.php.
  */
+
+// El controlador ya no carga el header, lo hacemos aquí.
+require_once ROOT . '/views/includes/header.php';
 ?>
 
-<h2>Página de Inicio</h2>
-<p>¡Bienvenido a la plataforma! El sistema de vistas está funcionando.</p>
+<div class="container">
+    <h2><?php echo isset($data['titulo']) ? htmlspecialchars($data['titulo']) : 'Bienvenido'; ?></h2>
+    <p>Explora nuestro catálogo de tiendas locales.</p>
 
-<p>Contenido futuro de esta página:</p>
-<ul>
-    <li>Buscador avanzado de tiendas.</li>
-    <li>Filtro rápido por categorías.</li>
-    <li>Carrusel de anuncios y tiendas destacadas.</li>
-    <li>Grid de tarjetas de tiendas con scroll infinito.</li>
-</ul>
+    <div class="tiendas-grid">
+        <?php if (!empty($data['tiendas'])) : ?>
+            <?php foreach ($data['tiendas'] as $tienda) : ?>
+                <div class="tienda-card">
+                    <div class="tienda-card-logo">
+                        <!-- Usaremos un placeholder si no hay logo específico -->
+                        <i class="fas fa-store fa-3x" style="color: #ccc;"></i>
+                    </div>
+                    <div class="tienda-card-contenido">
+                        <h3 class="tienda-card-titulo">
+                            <?php echo htmlspecialchars($tienda->nombre); ?>
+                            <?php if ($tienda->verificada) : ?>
+                                <i class="fas fa-check-circle tienda-card-verificada" title="Tienda Verificada"></i>
+                            <?php endif; ?>
+                        </h3>
+                        <p class="tienda-card-categoria"><?php echo htmlspecialchars($tienda->categoria_nombre); ?></p>
+                        <a href="#" class="tienda-card-contacto">Contactar</a>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <p>No hay tiendas para mostrar en este momento. ¡Vuelve pronto!</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+<?php
+require_once ROOT . '/views/includes/footer.php';
+?>
