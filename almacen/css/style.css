@@ -173,3 +173,34 @@ a {
 .tienda-card-contacto .fas {
     margin-right: 0.5rem;
 }
+
+/* --- 4. Estilos del Header y Navegación --- */
+
+.header-nav {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-nav {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-superficie);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+    transition: var(--transicion-suave);
+}
+
+.btn-nav:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--color-superficie);
+}
+
+.welcome-message {
+    color: var(--color-superficie);
+    font-weight: 600;
+}

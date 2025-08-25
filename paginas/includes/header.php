@@ -1,3 +1,9 @@
+<?php
+// Iniciar la sesión si no está iniciada para poder acceder a $_SESSION
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -20,6 +26,15 @@
 <body>
 
 <header class="hero-header">
+    <nav class="header-nav">
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <span class="welcome-message">¡Hola, <?php echo htmlspecialchars($_SESSION['user_nombre']); ?>!</span>
+            <a href="logout.php" class="btn-nav">Cerrar Sesión</a>
+        <?php else: ?>
+            <a href="paginas/login.php" class="btn-nav">Iniciar Sesión</a>
+            <a href="paginas/registro.php" class="btn-nav">Registrarse</a>
+        <?php endif; ?>
+    </nav>
     <div class="container">
         <h1><?php echo SITE_NAME; ?></h1>
         <p>Tu centro comercial digital. Conectando comercios locales con la comunidad.</p>
