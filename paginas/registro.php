@@ -4,23 +4,22 @@
  */
 
 session_start();
-require_once '../config.php';
+// Usamos __DIR__ para obtener una ruta robusta al archivo de configuración.
+require_once __DIR__ . '/../config.php';
 
 $errors = [];
 $success_message = '';
 
-// Lógica de procesamiento del formulario
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // 1. Conexión a la BD
+    // ... (la lógica PHP de procesamiento sigue siendo la misma) ...
     $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
     $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ];
     try {
         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
     } catch (PDOException $e) {
-        $errors[] = 'Error de conexión a la base de datos: ' . $e->getMessage();
+        $errors[] = 'Error de conexión a la base de datos.';
     }
 
-    // 2. Recoger y validar datos
     $nombre = trim($_POST['nombre'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
@@ -33,91 +32,97 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($password !== $password_confirm) $errors[] = 'Las contraseñas no coinciden.';
     if (empty($tipo_usuario) || !in_array($tipo_usuario, ['comprador', 'vendedor'])) $errors[] = 'Debe seleccionar un tipo de usuario.';
 
-    // 3. Si no hay errores, proceder
     if (empty($errors)) {
-        // Verificar si el email ya existe
         $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
             $errors[] = 'Este correo electrónico ya está registrado.';
         } else {
-            // Hashear la contraseña
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            // Generar token de verificación
             $token_verificacion = bin2hex(random_bytes(32));
-
-            // Insertar usuario en la BD
             try {
                 $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, email, password, tipo_usuario, token_verificacion) VALUES (?, ?, ?, ?, ?)");
                 $stmt->execute([$nombre, $email, $hashed_password, $tipo_usuario, $token_verificacion]);
                 $success_message = '¡Registro exitoso! Se ha enviado un enlace de verificación a tu correo. Por favor, revisa tu bandeja de entrada para activar tu cuenta.';
-                // En un futuro, aquí iría el código para enviar el email.
             } catch (PDOException $e) {
-                $errors[] = 'Error al registrar el usuario: ' . $e->getMessage();
+                $errors[] = 'Error al registrar el usuario.';
             }
         }
     }
 }
 
-// Incluir cabecera
 require_once 'includes/header.php';
 ?>
 
-<div class="container" style="max-width: 600px;">
-    <h2>Crear una Cuenta</h2>
-    <p>Únete a nuestra comunidad de compradores y vendedores locales.</p>
-    <hr style="margin: 1rem 0;">
+<div class="registro-layout">
 
-    <?php if (!empty($errors)): ?>
-        <div style="color: red; border: 1px solid red; padding: 1rem; margin-bottom: 1rem; border-radius: 8px;">
-            <strong>Error:</strong>
-            <ul>
-                <?php foreach ($errors as $error): ?>
-                    <li><?php echo $error; ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
+    <div class="form-container">
+        <h2>Crear una Cuenta</h2>
 
-    <?php if ($success_message): ?>
-        <div style="color: green; border: 1px solid green; padding: 1rem; margin-bottom: 1rem; border-radius: 8px;">
-            <?php echo $success_message; ?>
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-danger">
+                <ul><?php foreach ($errors as $error) echo "<li>$error</li>"; ?></ul>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($success_message): ?>
+            <div class="alert alert-success"><?php echo $success_message; ?></div>
+        <?php else: ?>
+            <form action="registro.php" method="POST">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña (mín. 8 caracteres)</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="password_confirm">Confirmar Contraseña</label>
+                    <input type="password" id="password_confirm" name="password_confirm" required>
+                </div>
+                <fieldset class="form-fieldset">
+                    <legend>Quiero registrarme como:</legend>
+                    <div>
+                        <input type="radio" id="tipo_comprador" name="tipo_usuario" value="comprador" checked>
+                        <label for="tipo_comprador">Comprador</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="tipo_vendedor" name="tipo_usuario" value="vendedor">
+                        <label for="tipo_vendedor">Vendedor</label>
+                    </div>
+                </fieldset>
+
+                <div id="beneficios-dinamicos" class="alert alert-success" style="display: none; margin-bottom: 1.25rem;"></div>
+
+                <button type="submit" class="tienda-card-contacto form-button">Crear mi Cuenta</button>
+            </form>
+            <a href="login.php" class="form-link">¿Ya tienes una cuenta? Inicia sesión</a>
+        <?php endif; ?>
+    </div>
+
+    <aside class="help-section">
+        <h3>¿Necesitas Ayuda?</h3>
+        <div class="video-placeholder">
+            <div class="icon"><i class="fas fa-store-alt"></i></div>
+            <h4>Cómo Registrar tu Tienda</h4>
+            <p>Una guía paso a paso para poner tu negocio en nuestra plataforma.</p>
         </div>
-    <?php else: ?>
-        <form action="registro.php" method="POST">
-            <div style="margin-bottom: 1rem;">
-                <label for="nombre">Nombre Completo</label>
-                <input type="text" id="nombre" name="nombre" required style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" required style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <label for="password">Contraseña (mín. 8 caracteres)</label>
-                <input type="password" id="password" name="password" required style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <label for="password_confirm">Confirmar Contraseña</label>
-                <input type="password" id="password_confirm" name="password_confirm" required style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
-            </div>
-            <fieldset style="margin-bottom: 1rem; border: 1px solid #ccc; padding: 1rem; border-radius: 4px;">
-                <legend>Quiero registrarme como:</legend>
-                <div>
-                    <input type="radio" id="tipo_comprador" name="tipo_usuario" value="comprador" checked>
-                    <label for="tipo_comprador">Comprador (Para guardar favoritos y calificar tiendas)</label>
-                </div>
-                <div>
-                    <input type="radio" id="tipo_vendedor" name="tipo_usuario" value="vendedor">
-                    <label for="tipo_vendedor">Vendedor (Para registrar mi tienda en la plataforma)</label>
-                </div>
-            </fieldset>
-            <button type="submit" class="tienda-card-contacto" style="width: 100%; border: none; cursor: pointer;">Crear mi Cuenta</button>
-        </form>
-    <?php endif; ?>
+        <div class="video-placeholder">
+            <div class="icon"><i class="fas fa-shopping-cart"></i></div>
+            <h4>Beneficios como Comprador</h4>
+            <p>Descubre cómo sacar el máximo provecho de tu cuenta de comprador.</p>
+        </div>
+    </aside>
+
 </div>
 
+<script src="../almacen/js/registro-dinamico.js"></script>
+
 <?php
-// Incluir pie de página
 require_once 'includes/footer.php';
 ?>

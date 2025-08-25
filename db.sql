@@ -69,6 +69,37 @@ LOCK TABLES `tiendas` WRITE;
 INSERT INTO `tiendas` VALUES (1,'PC-Componentes Bolivia',1,'default.png',1,'2025-08-25 16:16:47'),(2,'Moda Urbana',2,'default.png',1,'2025-08-25 16:16:47'),(3,'El Horno de la Abuela',4,'default.png',0,'2025-08-25 16:16:47'),(4,'Casa Bonita Decoraciones',3,'default.png',1,'2025-08-25 16:16:47'),(5,'Celulares Express',1,'default.png',0,'2025-08-25 16:16:47');
 /*!40000 ALTER TABLE `tiendas` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `usuarios`
+--
+
+DROP TABLE IF EXISTS `usuarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `usuarios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL COMMENT 'Contraseña hasheada',
+  `tipo_usuario` enum('comprador','vendedor') NOT NULL,
+  `token_verificacion` varchar(255) DEFAULT NULL,
+  `email_verificado` tinyint(1) NOT NULL DEFAULT '0',
+  `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `usuarios`
+--
+
+LOCK TABLES `usuarios` WRITE;
+/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
+INSERT INTO `usuarios` VALUES (1,'Test User','test@example.com','$2y$10$TG4vUovJDVvtYwql4PXkqOrw.5rMn6QN9I8l3kmKkq3l0SxH6JXJO','comprador','91026b18c1409934702223aef5a66bcc040cb9b7fa385c60f8a9116f831d571c',0,'2025-08-25 18:13:54');
+/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -79,4 +110,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-25 17:12:58
+-- Dump completed on 2025-08-25 18:23:26
