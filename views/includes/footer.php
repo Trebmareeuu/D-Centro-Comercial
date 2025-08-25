@@ -1,8 +1,7 @@
-</main> <!-- Cierre del .container principal -->
+</div> <!-- Cierre del .container principal -->
+</main>
 
 <footer>
-    <!-- El pie de página irá aquí: enlaces, copyright, etc. -->
-    <!-- Por ahora, un simple placeholder -->
     <div class="container">
         <hr>
         <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. Todos los derechos reservados.</p>
