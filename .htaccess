@@ -1,17 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-
-    # -- REGLAS DE REESCRITURA --
-
-    # Si la petición no es para un archivo que existe...
-    RewriteCond %{REQUEST_FILENAME} !-f
-    # Y si la petición no es para un directorio que existe...
-    RewriteCond %{REQUEST_FILENAME} !-d
-
-    # ...entonces, redirige la petición a index.php, pasando la URL original como un parámetro 'url'.
-    # [L] significa que es la última regla a procesar si coincide.
-    # [QSA] significa 'Query String Append', para conservar cualquier parámetro GET existente.
-    RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
+    # No hay reglas de reescritura de URL por ahora.
 </IfModule>
 
 # -- OTRAS DIRECTIVAS DE SEGURIDAD --
@@ -19,16 +8,13 @@
 # Evitar que se listen los contenidos de los directorios.
 Options -Indexes
 
-# Proteger archivos sensibles de ser accedidos directamente desde el navegador.
-<Files .htaccess>
-    Order Allow,Deny
-    Deny from all
+# Proteger archivos sensibles de ser accedidos directamente desde el navegador (Sintaxis Apache 2.4+).
+<Files ".ht*">
+    Require all denied
 </Files>
-<Files config.php>
-    Order Allow,Deny
-    Deny from all
+<Files "config.php">
+    Require all denied
 </Files>
-<Files setup_database.php>
-    Order Allow,Deny
-    Deny from all
+<Files "db.sql">
+    Require all denied
 </Files>
